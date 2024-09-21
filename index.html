@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplicación de Series</title>
+    <style>
+        /* Reset de estilos por defecto */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            overflow-x: hidden;
+        }
+
+        /* Cabecera roja */
+        header {
+            width: 100%;
+            background-color: red;
+            color: white;
+            text-align: center;
+            padding: 15px 0;
+            font-size: 24px;
+            position: fixed;
+            top: 0;
+            z-index: 1000;
+        }
+
+        /* Contenedor principal con margen superior para la cabecera */
+        .main-container {
+            padding-top: 70px; /* Altura de la cabecera */
+        }
+
+        /* Área del reproductor de video */
+        #video-player-container {
+            padding: 10px;
+            background-color: #fff;
+            border-bottom: 2px solid #ccc;
+        }
+
+        #video-player {
+            width: 100%;
+            height: auto;
+        }
+
+        /* Contenedores para los botones de episodios */
+        .episode-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .episode-button {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            flex: 1 1 45%;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .episode-button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Carrusel automático de portadas horizontales */
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .carousel-track {
+            display: flex;
+            width: calc(100% * 10); /* Duplicar para loop */
+            animation: scrollCarousel 20s linear infinite;
+        }
+
+        .carousel-item {
+            min-width: 430px;
+            height: 230px;
+            margin-right: 10px;
+            background-color: #ddd;
+            background-size: cover;
+            background-position: center;
+            border-radius: 10px;
+            flex-shrink: 0;
+        }
+
+        @keyframes scrollCarousel {
+            0% { transform: translateX(0); }
+            50% { transform: translateX(-2150px); } /* 430px * 5 */
+            100% { transform: translateX(0); }
+        }
+
+        /* Menú de portadas verticales */
+        .menu-container {
+            font-weight: bold;
+            padding: 12px;
+        }
+
+        .menu-title {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .menu-scroll {
+            display: flex;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .menu-item {
+            flex: 0 0 auto;
+            width: 110px;
+            margin-right: 10px;
+            text-align: center;
+        }
+
+        .menu-item img {
+            width: 110px;
+            height: 170px;
+            object-fit: cover;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .menu-item p {
+            font-size: 10px;
+            margin-top: 5px;
+            color: #333;
+        }
+
+        /* Estilos para el reproductor y botones cuando están activos */
+        .active-player {
+            animation: slideDown 0.5s forwards;
+        }
+
+        @keyframes slideDown {
+            from { max-height: 0; opacity: 0; }
+            to { max-height: 1000px; opacity: 1; }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+            .carousel-item {
+                min-width: 300px;
+                height: 160px;
+            }
+
+            .menu-item {
+                width: 80px;
+            }
+
+            .menu-item img {
+                width: 80px;
+                height: 130px;
+            }
+
+            header {
+                font-size: 20px;
+            }
+
+            .menu-title {
+                font-size: 15px;
+                font-weight: bold;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Cabecera -->
+    <header>
+        CINE PLAY
+    </header>
+
+    <!-- Contenedor principal -->
+    <div class="main-container">
+
+        <!-- Reproductor de video -->
+        <div id="video-player-container">
+            <video id="video-player" controls autoplay>
+                <source src="" type="video/mp4">
+                Tu navegador no soporta el elemento de video.
+            </video>
+            <div class="episode-buttons" id="episode-buttons">
+                <!-- Botones de episodios se generarán dinámicamente -->
+            </div>
+        </div>
+
+        <!-- Carrusel automático -->
+        <div class="carousel-container">
+            <div class="carousel-track" id="carousel-track">
+                <!-- Portadas del carrusel -->
+                <div class="carousel-item" style="background-image: url('https://i.ibb.co/GRGjZ8r/IMG-20240921-003024-650.jpg');"></div>
+                <div class="carousel-item" style="background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8VaYPfclF0hceUDYTLgQNLhCZs5kelComqg&s');"></div>
+                <div class="carousel-item" style="background-image: url('https://areajugones.sport.es/wp-content/uploads/2024/08/accidente-netflix-1.jpg');"></div>
+                <div class="carousel-item" style="background-image: url('https://ihorror.com/wp-content/uploads/2024/06/Runway-2024-06-20T16_00_52.203Z-Upscale-Image-Upscaled-Image-3413-x-1920-scaled.jpg');"></div>
+                <div class="carousel-item" style="background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQD3khWKIKCpm8H-jUzmZOEObEOD466rn1ZCw&s');"></div>
+                <!-- Duplicar las portadas para el loop continuo -->
+                <div class="carousel-item" style="background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkbJ7GHwhp-5JlYRBHP9WEbDKgtdV9T92XDg&s');"></div>
+                <div class="carousel-item" style="background-image: url('https://statics.lacoope.net/2020/06/crop/ed858c9e8b3d1eadb5454a272f76fef5__900x520.webp');"></div>
+                <div class="carousel-item" style="background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRk4j0Nj3WUMMDAmKsjndpAqoWh_qSYqh05tg&s');"></div>
+                <div class="carousel-item" style="background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjB_77DFmZ_ym3SPULjt0Soyta3cWWPUeXgA&s');"></div>
+                <div class="carousel-item" style="background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQWN8AkViFHvaTTH0C7fRRJCnLiYL3CtpbTdw&s');"></div>
+            </div>
+        </div>
+
+        <!-- Menú de portadas verticales -->
+        <div class="menu-container">
+            <div class="menu-title">✅ SERIES PARA VER</div>
+            <div class="menu-scroll" id="menu-scroll">
+                <!-- Elementos del menú -->
+                <div class="menu-item" data-series="Serie A">
+                    <img src="https://i.ibb.co/2FXZ179/IMG-20240921-003006-133.jpg" alt="Serie A">
+                    <p>Casa de papel 1ra Temp</p>
+                </div>
+                <div class="menu-item" data-series="Serie B">
+                    <img src="https://i.ibb.co/3fbwgXG/IMG-20240921-003010-013.jpg" alt="Serie B">
+                    <p>Casa de papel 2da Temp</p>
+                </div>
+                <div class="menu-item" data-series="Serie C">
+                    <img src="https://i.ibb.co/6PcJJT3/IMG-20240921-003012-959.jpg" alt="Serie C">
+                    <p>Casa de papel 3ra Temp</p>
+                </div>
+                <div class="menu-item" data-series="Serie D">
+                    <img src="https://i.ibb.co/Dzj4TLS/IMG-20240921-003016-897.jpg" alt="Serie D">
+                    <p>Casa de papel 4Ta Temp</p>
+                </div>
+                <div class="menu-item" data-series="Serie E">
+                    <img src="https://i.ibb.co/88238S6/IMG-20240921-003021-099.jpg" alt="Serie E">
+                    <p>Casa de papel 5Ta Temp</p>
+                </div>
+                <!-- Puedes agregar más series aquí -->
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Datos de series y episodios (personaliza según tus series)
+        const seriesData = {
+            "Serie A": {
+                episodes: [
+                    { title: "Episodio 1", src: "http://archive.org/download/6516515/1.MP4" },
+                    { title: "Episodio 2", src: "http://archive.org/download/6516515/2.MP4" },
+                    { title: "Episodio 3", src: "http://archive.org/download/6516515/3.MP4" },
+                    { title: "Episodio 4", src: "http://archive.org/download/6516515/4.MP4" },
+                    { title: "Episodio 5", src: "http://archive.org/download/6516515/5.MP4" },
+                    { title: "Episodio 6", src: "http://archive.org/download/6516515/6.MP4" },
+                    { title: "Episodio 7", src: "http://archive.org/download/6516515/7.MP4" },
+                    { title: "Episodio 8", src: "http://archive.org/download/6516515/8.MP4" },
+                    { title: "Episodio 9", src: "http://archive.org/download/6516515/9.MP4" },
+                ]
+            },
+            "Serie B": {
+                videoSrc: "https://www.w3schools.com/html/movie.mp4",
+                episodes: [
+                    { title: "Episodio 1", src: "https://www.w3schools.com/html/movie.mp4" },
+                    { title: "Episodio 2", src: "https://www.w3schools.com/html/mov_bbb.mp4" },
+                    { title: "Episodio 3", src: "https://www.w3schools.com/html/movie.mp4" }
+                ]
+            },
+            "Serie C": {
+                videoSrc: "https://www.w3schools.com/html/mov_bbb.mp4",
+                episodes: [
+                    { title: "Episodio 1", src: "https://www.w3schools.com/html/mov_bbb.mp4" },
+                    { title: "Episodio 2", src: "https://www.w3schools.com/html/movie.mp4" },
+                    { title: "Episodio 3", src: "https://www.w3schools.com/html/mov_bbb.mp4" }
+                ]
+            },
+            "Serie D": {
+                videoSrc: "https://www.w3schools.com/html/movie.mp4",
+                episodes: [
+                    { title: "Episodio 1", src: "https://www.w3schools.com/html/movie.mp4" },
+                    { title: "Episodio 2", src: "https://www.w3schools.com/html/mov_bbb.mp4" },
+                    { title: "Episodio 3", src: "https://www.w3schools.com/html/movie.mp4" }
+                ]
+            },
+            "Serie E": {
+                videoSrc: "https://www.w3schools.com/html/mov_bbb.mp4",
+                episodes: [
+                    { title: "Episodio 1", src: "https://www.w3schools.com/html/mov_bbb.mp4" },
+                    { title: "Episodio 2", src: "https://www.w3schools.com/html/movie.mp4" },
+                    { title: "Episodio 3", src: "https://www.w3schools.com/html/mov_bbb.mp4" }
+                ]
+            }
+        };
+
+        // Seleccionar elementos del DOM
+        const menuItems = document.querySelectorAll('.menu-item');
+        const videoPlayerContainer = document.getElementById('video-player-container');
+        const videoPlayer = document.getElementById('video-player');
+        const episodeButtonsContainer = document.getElementById('episode-buttons');
+
+        // Función para mostrar el reproductor de video con la serie seleccionada
+        function showVideoPlayer(seriesName) {
+            const series = seriesData[seriesName];
+            if (series) {
+                videoPlayer.src = series.episodes[0].src; // Reproducir el primer episodio
+                videoPlayerContainer.style.display = 'block';
+                
+                // Limpiar botones anteriores
+                episodeButtonsContainer.innerHTML = '';
+
+                // Crear botones para los episodios
+                series.episodes.forEach((episode, index) => {
+                    const button = document.createElement('button');
+                    button.classList.add('episode-button');
+                    button.textContent = episode.title;
+                    button.addEventListener('click', () => {
+                        videoPlayer.src = episode.src;
+                        videoPlayer.play();
+                    });
+                    episodeButtonsContainer.appendChild(button);
+                });
+
+                // Opcional: Añadir animación
+                videoPlayerContainer.classList.add('active-player');
+            }
+        }
+
+        // Añadir eventos a los elementos del menú
+        menuItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const seriesName = item.getAttribute('data-series');
+                showVideoPlayer(seriesName);
+            });
+        });
+
+        // Opcional: Reproducir automáticamente la primera serie al cargar
+        // showVideoPlayer("Serie A");
+    </script>
+
+</body>
+</html>
+
